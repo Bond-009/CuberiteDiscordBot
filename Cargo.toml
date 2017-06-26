@@ -1,0 +1,12 @@
+[package]
+name = "cuberite_discord_bot"
+version = "0.1.0"
+authors = ["Bond_009 <bond.009@outlook.com>"]
+
+[dependencies]
+toml = "0.4.2"
+
+[dependencies.serenity]
+git = "https://github.com/zeyla/serenity.git"
+default-features = false
+features = ["framework"]
