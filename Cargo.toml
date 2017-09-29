@@ -7,6 +7,7 @@ authors = ["Bond_009 <bond.009@outlook.com>"]
 toml = "0.4.2"
 
 [dependencies.serenity]
-git = "https://github.com/zeyla/serenity.git"
+#git = "https://github.com/zeyla/serenity.git"
+version = "0.4.0"
 default-features = false
-features = ["framework"]
+features = ["builder", "cache", "client", "framework", "standard_framework", "utils"]

@@ -3,26 +3,33 @@ extern crate serenity;
 
 mod commands;
 
-use serenity::Client;
-use serenity::model::Mentionable;
+use serenity::framework::standard::StandardFramework;
+use serenity::model::*;
+use serenity::prelude::*;
 use std::env;
 
-fn main() {
-    let mut client = Client::new(&env::var("DISCORD_TOKEN").unwrap());
-
-    client.with_framework(|f| f
-        .configure(|c| c
-            .prefix("c."))
-        .command("latency", |c| c.exec(commands::core::latency))
-    );
-
-    client.on_guild_member_add(|_ctx, guild_id, member| {
-        &guild_id.as_channel_id().say(&format!("{} welcome to the unofficial Cuberite Discord server!", &member.mention()));
-    });
-
-    client.on_ready(|_ctx, ready| {
+struct Handler;
+impl EventHandler for Handler {
+    fn on_ready(&self, _: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
-    });
+    }
+
+    fn on_guild_member_addition(&self, _: Context, guild_id: GuildId, member: Member) {
+        &guild_id.as_channel_id().say(&format!("{} welcome to the unofficial Cuberite Discord server!", &member.mention()));
+    }
+}
+
+fn main() {
+    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    let mut client = Client::new(&token, Handler);
+
+    client.with_framework(
+        StandardFramework::new()
+        .configure(|c| c
+            .on_mention(true)
+            .prefix("c."))
+            .command("latency", |c| c.exec(commands::core::latency))
+    );
 
     if let Err(why) = client.start() {
         println!("Client error: {:?}", why);
